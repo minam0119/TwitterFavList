@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">TwitterTest</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_tweet_list">TweetListActivity</string>
+    <string name="title_activity_fava_list">fava_list</string>
+    <string name="title_activity_fav_list">fav_list</string>
+    <string name="title_activity_title_dialog">title_dialog</string>
+    <string name="title_activity_login_to_list">Login_toList</string>
+</resources>
