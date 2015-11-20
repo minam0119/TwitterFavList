@@ -56,8 +56,8 @@ public class TweetListFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //ツイート画面へ
-                Intent intent = new Intent(getActivity(), TweetActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getActivity(), TweetActivity.class);
+//                startActivity(intent);
 
                 TweetComposer.Builder builder = new TweetComposer.Builder(getActivity()).text("");
                 builder.show();
