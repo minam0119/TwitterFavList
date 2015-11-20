@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ public class FavListFragment extends Fragment {
     ListView listView;
     FavListAdapter mAdapter;
     List<Category> mCategoryList;
+    FloatingActionButton mFab;
 
     @Nullable
     @Override
@@ -45,6 +47,13 @@ public class FavListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mAdapter = new FavListAdapter(getActivity(), 0);
+        mFab = (FloatingActionButton) view.findViewById(R.id.fab);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCreateDialog();
+            }
+        });
 
         Category allCategory = new Category();
         allCategory.name = "すべてのお気に入り";
@@ -113,11 +122,9 @@ public class FavListFragment extends Fragment {
         });
     }
 
-
-    public void plus(View v) {
+    private void showCreateDialog() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.activity_title_dialog, null);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("");
         builder.setView(layout);
@@ -126,9 +133,7 @@ public class FavListFragment extends Fragment {
         Button btok = (Button) layout.findViewById(R.id.okbt);
         btok.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                //EditTextの定義
-                //titleにEditTextの内容を代入
+            public void onClick(View view) {
                 EditText txtitle = (EditText) layout.findViewById(R.id.titletx);
                 String title = txtitle.getText().toString();
 
@@ -145,10 +150,8 @@ public class FavListFragment extends Fragment {
                 category.color = color;
                 category.save();
                 mAdapter.add(category);
-
                 dialog.dismiss();
             }
         });
-
     }
 }

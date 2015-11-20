@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/icon"
@@ -30,12 +30,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:minLines="1"
+                android:singleLine="true"
                 android:text="nickname"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:minLines="1"
-                android:ellipsize="end"
                 android:textColor="#212121"
                 android:textSize="16dp" />
 
@@ -43,9 +43,9 @@
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
                 android:text="username"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginLeft="8dp"
                 android:textColor="#888"
                 android:textSize="14sp" />
 
@@ -66,9 +66,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:clickable="false"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/btreply"
@@ -101,9 +101,11 @@
 
     </LinearLayout>
 
-    <com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView
-        android:id="@+id/aspectRatioImageView"
+    <ImageView
+        android:id="@+id/media_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter" />
 
 </LinearLayout>

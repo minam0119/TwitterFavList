@@ -9,11 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.lifeistech.android.twittertest.R;
-import com.lifeistech.android.twittertest.TweetTextUtils;
 import com.lifeistech.android.twittertest.fragment.FavListFragment;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -24,6 +22,8 @@ import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.FavoriteService;
 import com.twitter.sdk.android.core.services.StatusesService;
 import com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView;
+
+import java.util.List;
 
 /**
  * Created by MINAMI on 2015/09/19.
@@ -88,7 +88,7 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
                         public void success(Result<Tweet> result) {
                             //画像を暗くする
                             Toast.makeText(getContext(), result.data.user.screenName + "さんのツイートをリツイートしました", Toast.LENGTH_SHORT).show();
-                                viewHolder.retweetBtn.setImageResource(R.drawable.retweet_green);
+                            viewHolder.retweetBtn.setImageResource(R.drawable.retweet_green);
                         }
 
                         @Override
@@ -145,27 +145,29 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         viewHolder.usernameText.setText("@" + item.user.screenName);
 
         viewHolder.tweetText.setText(item.text);
-        ImageLoader.getInstance().displayImage(item.user.profileImageUrl, viewHolder.icon);
-
+        Glide.with(getContext()).load(item.user.profileImageUrl).into(viewHolder.icon);
         viewHolder.favoriteBtn.setTag(item.getId());
-        if(item.favorited){
+        if (item.favorited) {
             viewHolder.favoriteBtn.setImageResource(R.drawable.favorite_yellow);
         } else {
             viewHolder.favoriteBtn.setImageResource(R.drawable.favorite_light);
         }
 
         viewHolder.retweetBtn.setTag(item.getId());
-        if(item.retweeted){
+        if (item.retweeted) {
             viewHolder.retweetBtn.setImageResource(R.drawable.retweet_green);
         } else {
             viewHolder.retweetBtn.setImageResource(R.drawable.retweet_light);
         }
         viewHolder.replyBtn.setTag(item.getId());
 
-
-
-        // Glide.with(this).load("http://goo.gl/h8qOq7").into(imageView);
-
+        if (item.entities != null && !item.entities.media.isEmpty()) {
+            MediaEntity mediaEntity = item.entities.media.get(0);
+            Glide.with(getContext()).load(mediaEntity.mediaUrlHttps).into(viewHolder.mediaImageView);
+            viewHolder.mediaImageView.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.mediaImageView.setVisibility(View.GONE);
+        }
         return convertView;
     }
 
@@ -178,7 +180,7 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         ImageView retweetBtn;
         ImageView favoriteBtn;
         ImageView listBtn;
-        // AspectRatioImageView aspectRatioImageView;
+        ImageView mediaImageView;
 
         ViewHolder(View view) {
             nicknameText = (TextView) view.findViewById(R.id.nickname);
@@ -189,28 +191,9 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
             retweetBtn = (ImageView) view.findViewById(R.id.btretweet);
             favoriteBtn = (ImageView) view.findViewById(R.id.btfavorite);
             listBtn = (ImageView) view.findViewById(R.id.btlist);
-            // aspectRatioImageView = (AspectRatioImageView) view.findViewById(R.id.aspectRatioImageView);
+            mediaImageView = (ImageView) view.findViewById(R.id.media_image);
         }
     }
 
-    /*final void setTweetPhoto(AspectRatioImageView imageView, Tweet displayTweet) {
-        if(displayTweet != null && TweetTextUtils.hasPhotoUrl(displayTweet.entities)) {
-            MediaEntity photoEntity = TweetTextUtils.getLastPhotoEntity(displayTweet.entities);
-            imageView.setVisibility(View.VISIBLE);
-            this.setTweetPhoto(photoEntity);
-        } else {
-            imageView.setVisibility(View.GONE);
-        }
-    }
-
-    void setTweetPhoto(AspectRatioImageView imageView, MediaEntity photoEntity) {
-        Picasso imageLoader = this.dependencyProvider.getImageLoader();
-        if(imageLoader != null) {
-            // TODO com.twitter.sdk.android.tweetui.TweetViewFetchAdapter
-            // iamgeView.resetSize();
-            imageView.setAspectRatio(this.getAspectRatio(photoEntity));
-            imageLoader.load(photoEntity.mediaUrlHttps).placeholder(this.mediaBg).fit().centerCrop().into(this.mediaPhotoView, new BaseTweetView.PicassoCallback());
-        }
-    }*/
 
 }
