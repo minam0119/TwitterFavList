@@ -9,4 +9,7 @@
     <string name="title_activity_fav_list">fav_list</string>
     <string name="title_activity_title_dialog">title_dialog</string>
     <string name="title_activity_login_to_list">Login_toList</string>
+    <string name="title_activity_tweet">TweetActivity</string>
+    <string name="title_activity_main">ホーム</string>
+    <string name="title_activity_fragment_pager_adapter">FragmentPagerAdapter</string>
 </resources>

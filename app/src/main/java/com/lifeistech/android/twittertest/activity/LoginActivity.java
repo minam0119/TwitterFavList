@@ -1,14 +1,15 @@
-package com.lifeistech.android.twittertest;
+package com.lifeistech.android.twittertest.activity;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.lifeistech.android.twittertest.R;
+import com.lifeistech.android.twittertest.fragment.FavListFragment;
+import com.lifeistech.android.twittertest.fragment.TweetListFragment;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.twitter.sdk.android.core.Callback;
@@ -40,7 +41,7 @@ public class LoginActivity extends Activity {
             @Override
             public void success(Result<TwitterSession> result) {
                 // Do something with result, which provides a TwitterSession for making API calls
-                Intent intent = new Intent(getApplicationContext(), TweetListActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
 
@@ -80,12 +81,12 @@ public class LoginActivity extends Activity {
     }
 
     public void idou(View v) {
-        Intent intent = new Intent(this, FavListActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
     public void toTL(View v) {
-        Intent intent = new Intent(this, TweetListActivity.class);
+        Intent intent = new Intent(this, TweetListFragment.class);
         startActivity(intent);
     }
 }

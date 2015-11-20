@@ -1,11 +1,14 @@
-package com.lifeistech.android.twittertest;
+package com.lifeistech.android.twittertest.activity;
 
-import android.app.ListActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.AbsListView;
+import android.widget.ListView;
 
+import com.lifeistech.android.twittertest.R;
+import com.lifeistech.android.twittertest.adapter.TweetAdapter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -13,16 +16,15 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.FavoriteService;
-import com.twitter.sdk.android.core.services.StatusesService;
-import com.twitter.sdk.android.tweetui.TweetViewFetchAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 //
-public class FavTweetListActivity extends ListActivity {
+public class FavTweetListActivity extends AppCompatActivity {
 
-    //final TweetViewFetchAdapter adapter = new TweetViewFetchAdapter<>(FavTweetListActivity.this);
+    private ListView listView;
+
     TweetAdapter adapter;
     TwitterApiClient twitterApiClient;
 
@@ -31,7 +33,7 @@ public class FavTweetListActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tweet_list);
+        setContentView(R.layout.activity_fav_tweet_list);
 
         mCategoryName = getIntent().getStringExtra("categoryName");
         // カテゴリー名がNullではなく、@で始まっている場合
@@ -40,12 +42,15 @@ public class FavTweetListActivity extends ListActivity {
             mCategoryName = mCategoryName.substring("@".length());
         }
 
+        listView = (ListView) findViewById(R.id.listView);
         adapter = new TweetAdapter(this, 0);
-        setListAdapter(adapter);
+        listView.setAdapter(adapter);
+        
+        listView.setEmptyView(findViewById(R.id.emptyView));
 
         twitterApiClient = TwitterCore.getInstance().getApiClient();
 
-        getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
 
@@ -53,7 +58,7 @@ public class FavTweetListActivity extends ListActivity {
 
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(totalItemCount > 0 && totalItemCount <= firstVisibleItem + visibleItemCount){
+                if (totalItemCount > 0 && totalItemCount <= firstVisibleItem + visibleItemCount) {
                     Tweet tweet = adapter.getItem(adapter.getCount() - 1);
                     if (tweet != null) {
                         getFavTweet(String.valueOf(tweet.getId()), null);
@@ -100,6 +105,7 @@ public class FavTweetListActivity extends ListActivity {
                             getFavTweet(String.valueOf(sinceId), null);
                         } else {
                             adapter.addAll(data);
+
                         }
 
                     }

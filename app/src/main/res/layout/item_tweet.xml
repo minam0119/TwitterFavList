@@ -10,8 +10,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/tw__ic_logo_blue" />
+        android:layout_marginTop="10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,12 +26,18 @@
 
             <TextView
                 android:id="@+id/nickname"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="5dp"
                 android:text="nickname"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:minLines="1"
+                android:ellipsize="end"
+                android:textColor="#212121"
+                android:textSize="16dp" />
 
             <TextView
                 android:id="@+id/username"
@@ -40,7 +45,9 @@
                 android:layout_height="wrap_content"
                 android:text="username"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginLeft="8dp"
+                android:textColor="#888"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -52,43 +59,51 @@
             android:paddingBottom="2dp"
             android:paddingTop="2dp"
             android:text="tweettext"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#212121"
+            android:textSize="16dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
 
             <ImageView
                 android:id="@+id/btreply"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/reply_light" />
 
             <ImageView
                 android:id="@+id/btretweet"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="20dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="60dp"
                 android:src="@drawable/retweet_light" />
 
             <ImageView
                 android:id="@+id/btfavorite"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/favorite_light" />
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="60dp"
+                android:src="@drawable/fav_gray" />
 
             <ImageView
                 android:id="@+id/btlist"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="90dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="60dp"
                 android:src="@drawable/dfa" />
         </LinearLayout>
 
     </LinearLayout>
+
+    <com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView
+        android:id="@+id/aspectRatioImageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

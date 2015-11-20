@@ -1,50 +1,63 @@
-package com.lifeistech.android.twittertest;
+package com.lifeistech.android.twittertest.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.activeandroid.query.Select;
+import com.lifeistech.android.twittertest.activity.FavTweetListActivity;
+import com.lifeistech.android.twittertest.model.Category;
+import com.lifeistech.android.twittertest.adapter.FavListAdapter;
+import com.lifeistech.android.twittertest.R;
+
+import java.util.List;
 
 
-public class FavListActivity extends AppCompatActivity {
+public class FavListFragment extends Fragment {
 
     ListView listView;
     FavListAdapter mAdapter;
+    List<Category> mCategoryList;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_fav_list, container, false);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fav_list);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        mAdapter = new FavListAdapter(this, 0);
+        mAdapter = new FavListAdapter(getActivity(), 0);
 
-        Category category = new Category();
-        category.name = "すべてのお気に入り";
-        category.color = Color.parseColor(("#aaFF0000"));
-        mAdapter.add(category);
+        Category allCategory = new Category();
+        allCategory.name = "すべてのお気に入り";
+        allCategory.color = Color.parseColor("#aaFF0000");
+        mAdapter.add(allCategory);
 
-        listView = (ListView) findViewById(R.id.listView);
+        // 今の保存されているカテゴリーを取り出す
+        mCategoryList = new Select().from(Category.class).execute();
+        for (Category category : mCategoryList) {
+            mAdapter.add(category);
+        }
+
+        listView = (ListView) view.findViewById(R.id.listView);
         //長押しでdelete
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             //ダイアログを作成
@@ -56,7 +69,7 @@ public class FavListActivity extends AppCompatActivity {
                     return true;
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(FavListActivity.this)
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                         .setMessage(selectedItem.name + "を削除しますか?")
                         .setPositiveButton("はい", new DialogInterface.OnClickListener() {
 
@@ -79,7 +92,7 @@ public class FavListActivity extends AppCompatActivity {
             }
         });
 
-        listView = (ListView) findViewById(R.id.listView);
+        listView = (ListView) view.findViewById(R.id.listView);
         listView.setAdapter(mAdapter);
 
         //ListをClickで移動
@@ -89,7 +102,7 @@ public class FavListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                     long arg3) {
                 //title2 = mAdapter.getItem(position);
-                Intent intent = new Intent(FavListActivity.this, FavTweetListActivity.class);
+                Intent intent = new Intent(getActivity(), FavTweetListActivity.class);
                 if (position == 0) {
                     intent.putExtra("categoryName", "");
                 } else {
@@ -102,10 +115,10 @@ public class FavListActivity extends AppCompatActivity {
 
 
     public void plus(View v) {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         final View layout = inflater.inflate(R.layout.activity_title_dialog, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("");
         builder.setView(layout);
         final AlertDialog dialog = builder.show();
@@ -114,7 +127,6 @@ public class FavListActivity extends AppCompatActivity {
         btok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 //EditTextの定義
                 //titleにEditTextの内容を代入
                 EditText txtitle = (EditText) layout.findViewById(R.id.titletx);
@@ -131,6 +143,7 @@ public class FavListActivity extends AppCompatActivity {
                 Category category = new Category();
                 category.name = title;
                 category.color = color;
+                category.save();
                 mAdapter.add(category);
 
                 dialog.dismiss();
