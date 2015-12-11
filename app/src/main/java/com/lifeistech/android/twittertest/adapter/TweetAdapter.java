@@ -2,6 +2,8 @@ package com.lifeistech.android.twittertest.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.lifeistech.android.twittertest.R;
 import com.lifeistech.android.twittertest.fragment.FavListFragment;
 import com.twitter.sdk.android.core.Callback;
@@ -148,9 +151,9 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         Glide.with(getContext()).load(item.user.profileImageUrl).into(viewHolder.icon);
         viewHolder.favoriteBtn.setTag(item.getId());
         if (item.favorited) {
-            viewHolder.favoriteBtn.setImageResource(R.drawable.favorite_yellow);
+            viewHolder.favoriteBtn.setImageResource(R.drawable.fav_color);
         } else {
-            viewHolder.favoriteBtn.setImageResource(R.drawable.favorite_light);
+            viewHolder.favoriteBtn.setImageResource(R.drawable.fav_gray);
         }
 
         viewHolder.retweetBtn.setTag(item.getId());
@@ -161,12 +164,14 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         }
         viewHolder.replyBtn.setTag(item.getId());
 
-        if (item.entities != null && !item.entities.media.isEmpty()) {
-            MediaEntity mediaEntity = item.entities.media.get(0);
-            Glide.with(getContext()).load(mediaEntity.mediaUrlHttps).into(viewHolder.mediaImageView);
+        if (item.entities != null && item.entities.media != null && !item.entities.media.isEmpty()) {
+            final MediaEntity mediaEntity = item.entities.media.get(0);
+            Log.d("TweetAdapter", mediaEntity.mediaUrlHttps);
             viewHolder.mediaImageView.setVisibility(View.VISIBLE);
+            Glide.with(getContext()).load(mediaEntity.mediaUrlHttps).into(viewHolder.mediaImageView);
         } else {
             viewHolder.mediaImageView.setVisibility(View.GONE);
+            convertView.setBackgroundColor(Color.WHITE);
         }
         return convertView;
     }

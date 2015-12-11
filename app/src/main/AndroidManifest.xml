@@ -23,7 +23,7 @@
             android:name=".activity.FavTweetListActivity"
             android:label="@string/title_activity_tweet_list" />
         <activity
-            android:name=".activity.TitleDialogActivity"
+            android:name=".activity.TitleDialogFragment"
             android:label="@string/title_activity_title_dialog" />
         <activity
             android:name=".activity.TweetActivity"

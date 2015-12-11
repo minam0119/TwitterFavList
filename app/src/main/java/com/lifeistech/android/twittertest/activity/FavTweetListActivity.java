@@ -24,16 +24,20 @@ import java.util.List;
 public class FavTweetListActivity extends AppCompatActivity {
 
     private ListView listView;
-
     TweetAdapter adapter;
+    TwitterCore twitterCore;
     TwitterApiClient twitterApiClient;
-
     private String mCategoryName;
+    private boolean isRequesting = false;
+    private Long lastSinceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fav_tweet_list);
+
+        twitterCore = TwitterCore.getInstance();
+        twitterApiClient = twitterCore.getApiClient();
 
         mCategoryName = getIntent().getStringExtra("categoryName");
         // カテゴリー名がNullではなく、@で始まっている場合
@@ -42,14 +46,11 @@ public class FavTweetListActivity extends AppCompatActivity {
             mCategoryName = mCategoryName.substring("@".length());
         }
 
-        listView = (ListView) findViewById(R.id.listView);
         adapter = new TweetAdapter(this, 0);
+
+        listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(adapter);
-        
         listView.setEmptyView(findViewById(R.id.emptyView));
-
-        twitterApiClient = TwitterCore.getInstance().getApiClient();
-
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -58,33 +59,33 @@ public class FavTweetListActivity extends AppCompatActivity {
 
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (totalItemCount > 0 && totalItemCount <= firstVisibleItem + visibleItemCount) {
-                    Tweet tweet = adapter.getItem(adapter.getCount() - 1);
-                    if (tweet != null) {
-                        getFavTweet(String.valueOf(tweet.getId()), null);
-                    } else {
-                        getFavTweet(null, null);
-                    }
+                if (totalItemCount > 0 && totalItemCount <= firstVisibleItem + visibleItemCount + 2) {
+                    getFavTweet(lastSinceId, null);
                 }
             }
         });
-        getFavTweet(null, null);
+        lastSinceId = null;
+        getFavTweet(lastSinceId, null);
     }
 
     // 全部のお気に入りTweetを取得する
-    private void getFavTweet(String sinceId, String maxId) {
+    private void getFavTweet(Long sinceId, Long maxId) {
+        if (isRequesting) return;
         // statusAPI用のserviceクラス
         FavoriteService favoriteService = twitterApiClient.getFavoriteService();
         favoriteService.list(
-                TwitterCore.getInstance().getSessionManager().getActiveSession().getUserId(),
+                twitterCore.getSessionManager().getActiveSession().getUserId(),
                 null,
                 30, //Count
-                sinceId,
-                maxId,
+                sinceId == null ? null : String.valueOf(sinceId),
+                maxId == null ? null : String.valueOf(maxId),
                 null,
                 new Callback<List<Tweet>>() {
                     @Override
                     public void success(Result<List<Tweet>> result) {
+                        if (result.data.isEmpty()) return;
+                        isRequesting = false;
+                        lastSinceId = result.data.get(result.data.size() - 1).getId();
                         // もらってきたデータ
                         List<Tweet> data = new ArrayList<>();
                         // もらってきたデータのひとつひとつに対して
@@ -100,20 +101,21 @@ public class FavTweetListActivity extends AppCompatActivity {
                                 data.add(tweet);
                             }
                         }
-                        if (data.isEmpty() && !result.data.isEmpty()) {
-                            long sinceId = result.data.get(result.data.size() - 1).getId();
-                            getFavTweet(String.valueOf(sinceId), null);
+                        // Filterにかけた
+                        if (data.isEmpty()) {
+                            getFavTweet(lastSinceId, null);
                         } else {
                             adapter.addAll(data);
-
                         }
 
                     }
 
                     @Override
                     public void failure(TwitterException e) {
+                        isRequesting = false;
                         e.printStackTrace();
                     }
                 });
+        isRequesting = true;
     }
 }
