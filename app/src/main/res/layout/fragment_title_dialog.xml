@@ -5,7 +5,7 @@
     android:background="#ffffff"
     android:gravity="center|center_vertical|center_horizontal"
     android:orientation="vertical"
-    tools:context="com.lifeistech.android.twittertest.activity.TitleDialogFragment">
+    tools:context="com.lifeistech.android.twittertest.fragment.TitleDialogFragment">
 
     <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/toolbar"

@@ -11,8 +11,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TableLayout;
 
+import com.lifeistech.android.twittertest.BusHolder;
 import com.lifeistech.android.twittertest.R;
 import com.lifeistech.android.twittertest.adapter.TopPagerAdapter;
+import com.lifeistech.android.twittertest.event.AddCategoryEvent;
+import com.lifeistech.android.twittertest.fragment.TweetListFragment;
+import com.squareup.otto.Subscribe;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +53,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        BusHolder.register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        BusHolder.unregister(this);
+    }
+
+    @Subscribe
+    public void subscribeEvent(AddCategoryEvent event) {
+        viewPager.setCurrentItem(1, true);
     }
 
 }

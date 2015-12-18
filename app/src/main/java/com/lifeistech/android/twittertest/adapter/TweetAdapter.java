@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.lifeistech.android.twittertest.BusHolder;
 import com.lifeistech.android.twittertest.R;
+import com.lifeistech.android.twittertest.event.AddCategoryEvent;
 import com.lifeistech.android.twittertest.fragment.FavListFragment;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -24,6 +26,7 @@ import com.twitter.sdk.android.core.models.MediaEntity;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.FavoriteService;
 import com.twitter.sdk.android.core.services.StatusesService;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.twitter.sdk.android.tweetui.internal.util.AspectRatioImageView;
 
 import java.util.List;
@@ -52,7 +55,9 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
                 @Override
                 public void onClick(View view) {
                     long tweetId = (Long) view.getTag();
-                    final String message = "";
+                    TweetComposer.Builder builder = new TweetComposer.Builder(getContext()).text("");
+                    builder.show();
+                    /*final String message = "";
                     StatusesService statusesService = twitterApiClient.getStatusesService();
                     statusesService.update(
                             message, // message
@@ -66,7 +71,8 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
                             new Callback<Tweet>() {
                                 @Override
                                 public void success(Result<Tweet> result) {
-
+                                    TweetComposer.Builder builder = new TweetComposer.Builder(getContext()).text("");
+                                    builder.show();
                                 }
 
                                 @Override
@@ -74,7 +80,8 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
 
                                 }
                             }
-                    );
+                    );*/
+
                     //リプライの処理
 
                 }
@@ -133,10 +140,7 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
             viewHolder.listBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(getContext(), FavListFragment.class);
-                    intent.putExtra("categoryName", getItem(position).user.name);
-                    getContext().startActivity(intent);
-
+                    BusHolder.post(new AddCategoryEvent(getItem(position).id));
                 }
             });
         } else {
@@ -199,6 +203,4 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
             mediaImageView = (ImageView) view.findViewById(R.id.media_image);
         }
     }
-
-
 }

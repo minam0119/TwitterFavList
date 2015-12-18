@@ -1,7 +1,8 @@
-package com.lifeistech.android.twittertest.activity;
+package com.lifeistech.android.twittertest.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.graphics.Color;
@@ -18,13 +19,27 @@ import android.widget.TextView;
 import com.lifeistech.android.twittertest.R;
 import com.lifeistech.android.twittertest.model.Category;
 
+import java.util.ArrayList;
+
 
 public class TitleDialogFragment extends DialogFragment {
-    TextView titletx;
-    Button okbt;
-    Toolbar toolbar;
-    EditText txtitle;
-    RadioGroup group;
+    private static final String TWEET_ID = "tweet_id";
+
+    public TitleDialogFragment createInstance(Long tweetId) {
+        Bundle args = new Bundle();
+        if (tweetId != null) {
+            args.putLong(TWEET_ID, tweetId);
+        }
+        TitleDialogFragment fragment = new TitleDialogFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private TextView titletx;
+    private Button okbt;
+    private Toolbar toolbar;
+    private EditText txtitle;
+    private RadioGroup group;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -47,12 +62,21 @@ public class TitleDialogFragment extends DialogFragment {
                 Category category = new Category();
                 category.name = title;
                 category.color = color;
+                category.ids = new ArrayList<Long>();
+
+                Bundle args = getArguments();
+                long tweetId = args != null ? args.getLong(TWEET_ID, -1) : -1;
+                if (tweetId != -1) {
+                    category.ids.add(tweetId);
+                }
                 category.save();
 
                 Fragment fragment = getParentFragment();
                 if (fragment instanceof CreateDialogListener) {
                     ((CreateDialogListener) fragment).onCreateCategory(category);
                 }
+
+                dismiss();
             }
         });
         txtitle = (EditText) view.findViewById(R.id.titletx);
@@ -64,6 +88,6 @@ public class TitleDialogFragment extends DialogFragment {
 
 
     public interface CreateDialogListener {
-        public void onCreateCategory(Category category);
+        void onCreateCategory(Category category);
     }
 }

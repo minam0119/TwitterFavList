@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.lifeistech.android.twittertest.R;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
@@ -27,12 +28,10 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-//        ActionBar actionbar = this.getActionBar();
-//        if(actionbar!=null)actionbar.hide();
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        /*toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
-        toolbar.setTitle("ログイン");
+        toolbar.setTitle("ログイン");*/
 
         loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
         loginButton.setCallback(new Callback<TwitterSession>() {
@@ -48,6 +47,14 @@ public class LoginActivity extends Activity {
                 // Do something on failure
             }
         });
+
+        TwitterCore twitterCore = TwitterCore.getInstance();
+        TwitterSession twitterSession = twitterCore.getSessionManager().getActiveSession();
+        if (twitterSession == null) {
+            twitterCore.getSessionManager();
+        }
+
+
     }
 
     @Override

@@ -23,9 +23,6 @@
             android:name=".activity.FavTweetListActivity"
             android:label="@string/title_activity_tweet_list" />
         <activity
-            android:name=".activity.TitleDialogFragment"
-            android:label="@string/title_activity_title_dialog" />
-        <activity
             android:name=".activity.TweetActivity"
             android:label="@string/title_activity_tweet" />
 
@@ -37,7 +34,7 @@
             android:value="Tweet.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="1" />
+            android:value="2" />
         <meta-data
             android:name="AA_MODELS"
             android:value="com.lifeistech.android.twittertest.model.Category" />

@@ -1,5 +1,7 @@
 package com.lifeistech.android.twittertest.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,7 +27,7 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import java.util.List;
 
 
-public class TweetListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class TweetListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     SwipeRefreshLayout swipeRefreshLayout;
     ListView listView;
@@ -33,6 +35,8 @@ public class TweetListFragment extends Fragment implements SwipeRefreshLayout.On
 
     TwitterApiClient twitterApiClient;
     TweetAdapter adapter;
+
+    private TweetListListener listener;
 
     // 今通信をしているかどうか (false -> リクエストしていない, true -> リクエスト中)
     private boolean isRequesting = false;
@@ -56,8 +60,9 @@ public class TweetListFragment extends Fragment implements SwipeRefreshLayout.On
 //                Intent intent = new Intent(getActivity(), TweetActivity.class);
 //                startActivity(intent);
                 // ツイート画面へ
-                TweetComposer.Builder builder = new TweetComposer.Builder(getActivity()).text("");
-                builder.show();
+                // ツイート画面へ
+                //TweetComposer.Builder builder = new TweetComposer.Builder(getActivity()).text("@" + item.user.name);
+                //builder.show();
             }
         });
 
@@ -125,5 +130,23 @@ public class TweetListFragment extends Fragment implements SwipeRefreshLayout.On
 //        getTweet(adapter.getItem(0).getId(), null);
         adapter.clear();
         getTweet(null, null);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof TweetListListener) {
+            listener = (TweetListListener) activity;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    public interface TweetListListener {
+        void onListAddListener(String name);
     }
 }
