@@ -29,7 +29,7 @@
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/twitter_login_button"
         android:layout_marginBottom="24dp"
-        android:id="@+id/">
+        >
 
         <TextView
             android:layout_width="wrap_content"

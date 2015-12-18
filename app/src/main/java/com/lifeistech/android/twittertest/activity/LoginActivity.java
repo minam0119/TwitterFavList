@@ -2,8 +2,10 @@ package com.lifeistech.android.twittertest.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,22 +24,31 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 public class LoginActivity extends Activity {
 
     private TwitterLoginButton loginButton;
-    Toolbar toolbar;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        /*toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(Color.WHITE);
-        toolbar.setTitle("ログイン");*/
+        // ログインしているかどうか
+        boolean isLogin = sharedPreferences.getBoolean("isLogin", false);
+
+        // SharedPreferencesからログイン済みかどうかを取得する
+        if (isLogin) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            // TopActivityにいく
+        }
 
         loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                // Do something with result, which provides a TwitterSession for making API calls
+                // SharedPreferencesにログイン済みと記録する
+                sharedPreferences.edit().putBoolean("isLogin", true).commit();
+
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
