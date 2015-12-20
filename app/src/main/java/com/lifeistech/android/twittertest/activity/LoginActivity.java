@@ -42,6 +42,7 @@ public class LoginActivity extends Activity {
             // TopActivityにいく
         }
 
+
         loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override

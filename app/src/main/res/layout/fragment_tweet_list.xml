@@ -27,11 +27,11 @@
         android:text="oops, this is empty."
         android:visibility="gone" />
 
-    <Button
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="tweet" />
+        android:src="@drawable/tweetbt"
+        android:layout_gravity="right" />
 
 </LinearLayout>

@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -36,10 +37,11 @@ public class TitleDialogFragment extends DialogFragment {
     }
 
     private TextView titletx;
-    private Button okbt;
+    private ImageView okbt;
     private Toolbar toolbar;
     private EditText txtitle;
     private RadioGroup group;
+    RadioButton pink,aqua,orange,green;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class TitleDialogFragment extends DialogFragment {
         toolbar.setTitleTextColor(Color.WHITE);
 
         titletx = (TextView) view.findViewById(R.id.titletx);
-        okbt = (Button) view.findViewById(R.id.okbt);
+        okbt = (ImageView) view.findViewById(R.id.okbt);
         okbt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

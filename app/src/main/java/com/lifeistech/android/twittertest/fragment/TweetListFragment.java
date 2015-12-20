@@ -2,6 +2,7 @@ package com.lifeistech.android.twittertest.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.lifeistech.android.twittertest.R;
@@ -31,7 +33,7 @@ public class TweetListFragment extends Fragment implements SwipeRefreshLayout.On
 
     SwipeRefreshLayout swipeRefreshLayout;
     ListView listView;
-    Button tweetButton;
+    ImageView tweetButton;
 
     TwitterApiClient twitterApiClient;
     TweetAdapter adapter;
@@ -53,7 +55,7 @@ public class TweetListFragment extends Fragment implements SwipeRefreshLayout.On
 
         twitterApiClient = TwitterCore.getInstance().getApiClient();
         adapter = new TweetAdapter(getActivity(), 0);
-        tweetButton = (Button) view.findViewById(R.id.button3);
+        tweetButton = (ImageView) view.findViewById(R.id.button3);
         tweetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,8 +63,8 @@ public class TweetListFragment extends Fragment implements SwipeRefreshLayout.On
 //                startActivity(intent);
                 // ツイート画面へ
                 // ツイート画面へ
-                //TweetComposer.Builder builder = new TweetComposer.Builder(getActivity()).text("@" + item.user.name);
-                //builder.show();
+                TweetComposer.Builder builder = new TweetComposer.Builder(getActivity()).text("");
+                builder.show();
             }
         });
 
