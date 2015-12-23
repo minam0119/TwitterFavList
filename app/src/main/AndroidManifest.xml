@@ -44,7 +44,7 @@
             android:label="@string/title_activity_main" >
         </activity>
         <activity
-            android:name=".Main2Activity"
+            android:name=".AddFavActivity"
             android:label="@string/title_activity_main2" >
         </activity>
     </application>

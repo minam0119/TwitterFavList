@@ -40,13 +40,23 @@ public class FavListFragment extends Fragment implements
         AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener,
         TitleDialogFragment.CreateDialogListener {
+    public static final String TWEET_ID = "tweet_id";
 
     ListView listView;
     FavListAdapter mAdapter;
     List<Category> mCategoryList;
     FloatingActionButton mFab;
-    private Long mTweetId;
     TwitterApiClient twitterApiClient;
+    private Long mTweetId;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args == null) return;
+        mTweetId = args.getLong(TWEET_ID);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -160,11 +170,6 @@ public class FavListFragment extends Fragment implements
             mTweetId = null;
             Toast.makeText(getActivity(), category.name + "にツイートを追加しました！", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Subscribe
-    public void subscribeEvent(AddCategoryEvent event) {
-        mTweetId = event.tweetId;
     }
 
     private boolean addTweet(Category category) {
