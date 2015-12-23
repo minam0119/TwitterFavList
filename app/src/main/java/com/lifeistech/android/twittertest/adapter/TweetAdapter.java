@@ -43,6 +43,8 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         twitterApiClient = TwitterCore.getInstance().getApiClient();
     }
 
+
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder viewHolder;
@@ -143,6 +145,8 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
                     BusHolder.post(new AddCategoryEvent(getItem(position).id));
                 }
             });
+
+
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }

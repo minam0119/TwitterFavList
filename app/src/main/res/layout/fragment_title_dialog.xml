@@ -46,7 +46,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
 
         <RadioGroup
             android:id="@+id/radioGroup"
@@ -67,47 +68,43 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="22dp"
-                android:background="@drawable/rb_pink"
+                android:background="@drawable/categorycolor_bt"
                 android:button="@null"
-                android:checked="false"
-                android:tag="#aaff00ed" />
+                android:checked="false" />
 
             <RadioButton
                 android:id="@+id/aqua"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="22dp"
-                android:background="@drawable/rb_aqua"
+                android:background="@drawable/categorycolor_bt"
                 android:button="@null"
-                android:checked="false"
-                android:tag="#aa00fff2" />
+                android:checked="false" />
 
             <RadioButton
                 android:id="@+id/orange"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginRight="22dp"
-                android:background="@drawable/rb_orange"
+                android:background="@drawable/categorycolor_bt"
                 android:button="@null"
-                android:checked="false"
-                android:tag="#aaff9100" />
+                android:checked="false" />
 
             <RadioButton
                 android:id="@+id/green"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/rb_green"
+                android:background="@drawable/categorycolor_bt"
                 android:button="@null"
-                android:checked="false"
-                android:tag="#aa19ff00" />
+                android:checked="false" />
         </RadioGroup>
     </LinearLayout>
 
     <ImageView
-        android:layout_width="100dp"
+        android:layout_width="180dp"
         android:layout_height="40dp"
         android:id="@+id/okbt"
-        android:src="@drawable/makebt"
+        android:src="@drawable/make_bt"
         android:layout_marginBottom="30dp" />
 
 </LinearLayout>

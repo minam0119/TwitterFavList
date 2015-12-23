@@ -32,6 +32,7 @@ public class FavListAdapter extends ArrayAdapter<Category> {
 
         TextView colorText = (TextView)convertView.findViewById(R.id.textView2);
         colorText.setBackgroundColor(item.color);
+        colorText.setAlpha(0.6f);
 
         return convertView;
     }

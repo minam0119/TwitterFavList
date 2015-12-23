@@ -75,7 +75,7 @@ public class FavTweetListActivity extends AppCompatActivity {
         } else {
             mCategory = new Category();
             mCategory.name = "全てのお気に入り";
-            mCategory.color = Color.RED;
+            mCategory.color = Color.parseColor("#aaFF0000");;
 
             listView.setOnScrollListener(new AbsListView.OnScrollListener() {
                 @Override
