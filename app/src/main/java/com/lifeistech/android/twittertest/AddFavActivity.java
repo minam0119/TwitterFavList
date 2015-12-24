@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.lifeistech.android.twittertest.fragment.FavListFragment;
 
@@ -33,6 +34,7 @@ public class AddFavActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         long tweetId = intent.getLongExtra(TWEET_ID, -1);
+        Log.d(AddFavActivity.class.getSimpleName(), "TWEET_ID:" + tweetId);
         if (tweetId != -1) {
             //Fragmentをflamelayoutに入れる
             FavListFragment fragment = new FavListFragment();

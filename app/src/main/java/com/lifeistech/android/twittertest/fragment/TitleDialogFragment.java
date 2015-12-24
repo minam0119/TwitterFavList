@@ -28,7 +28,7 @@ public class TitleDialogFragment extends DialogFragment {
     private static final String TWEET_ID = "tweet_id";
     private static final String[] CATEGORY_COLORS = {"#ff00ed", "#00fff2", "#ff9100", "#19ff00"};
 
-    public TitleDialogFragment createInstance(Long tweetId) {
+    public static TitleDialogFragment createInstance(Long tweetId) {
         Bundle args = new Bundle();
         if (tweetId != null) {
             args.putLong(TWEET_ID, tweetId);

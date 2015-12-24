@@ -1,5 +1,6 @@
 package com.lifeistech.android.twittertest.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.internal.TwitterApi;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.core.services.FavoriteService;
 import com.twitter.sdk.android.core.services.StatusesService;
@@ -37,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FavListFragment extends Fragment implements
-        AdapterView.OnItemClickListener,
         AdapterView.OnItemLongClickListener,
         TitleDialogFragment.CreateDialogListener {
     public static final String TWEET_ID = "tweet_id";
@@ -47,14 +48,17 @@ public class FavListFragment extends Fragment implements
     List<Category> mCategoryList;
     FloatingActionButton mFab;
     TwitterApiClient twitterApiClient;
+    // mTweetIdがnullだったらお気に入りのツイートを確認する
+    // nullじゃなかったら、お気に入りのツイートを追加する
     private Long mTweetId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
-        if (args == null) return;
-        mTweetId = args.getLong(TWEET_ID);
+        if (args != null) {
+            mTweetId = args.getLong(TWEET_ID);
+        }
     }
 
     @Nullable
@@ -77,10 +81,12 @@ public class FavListFragment extends Fragment implements
         });
         twitterApiClient = TwitterCore.getInstance().getApiClient();
 
-        Category allCategory = new Category();
-        allCategory.name = "すべてのお気に入り";
-        allCategory.color = Color.parseColor("#aaFF0000");
-        mAdapter.add(allCategory);
+        if (mTweetId == null) {
+            Category allCategory = new Category();
+            allCategory.name = "すべてのお気に入り";
+            allCategory.color = Color.parseColor("#aaFF0000");
+            mAdapter.add(allCategory);
+        }
 
         // 今の保存されているカテゴリーを取り出す
         mCategoryList = new Select().from(Category.class).execute();
@@ -91,46 +97,18 @@ public class FavListFragment extends Fragment implements
         listView = (ListView) view.findViewById(R.id.listView);
         listView.setAdapter(mAdapter);
         //ListをClickで移動
-        listView.setOnItemClickListener(this);
-        //長押しでdelete
-        listView.setOnItemLongClickListener(this);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        BusHolder.register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        BusHolder.unregister(this);
+        if (mTweetId == null) {
+            listView.setOnItemClickListener(intentFavListClickListener);
+            //長押しでdelete
+            listView.setOnItemLongClickListener(this);
+        } else {
+            listView.setOnItemClickListener(addTweetClickListener);
+        }
     }
 
     private void showCreateDialog() {
-        TitleDialogFragment titleDialogFragment = new TitleDialogFragment();
+        TitleDialogFragment titleDialogFragment = TitleDialogFragment.createInstance(mTweetId);
         titleDialogFragment.show(getChildFragmentManager(), "dialog");
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        Intent intent = new Intent(getActivity(), FavTweetListActivity.class);
-        if (position == 0) {
-            if (mTweetId != null) {
-                Toast.makeText(getActivity(), "全てのお気に入りにはツイートを追加できません", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            intent.putExtra(FavTweetListActivity.CATEGORY_ID, -1);
-        } else {
-            Category category = mAdapter.getItem(position);
-            if (addTweet(category)) {
-                return;
-            } else {
-                intent.putExtra(FavTweetListActivity.CATEGORY_ID, category.getId());
-            }
-        }
-        startActivity(intent);
     }
 
     @Override
@@ -141,6 +119,7 @@ public class FavListFragment extends Fragment implements
         if (position == 0) {
             return true;
         }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setMessage(selectedItem.name + "を削除しますか?")
                 .setPositiveButton("はい", new DialogInterface.OnClickListener() {
@@ -166,36 +145,61 @@ public class FavListFragment extends Fragment implements
     @Override
     public void onCreateCategory(Category category) {
         mAdapter.add(category);
+        // ツイートを追加する処理の場合
         if (mTweetId != null) {
-            mTweetId = null;
             Toast.makeText(getActivity(), category.name + "にツイートを追加しました！", Toast.LENGTH_SHORT).show();
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         }
     }
 
     private boolean addTweet(Category category) {
-        if (mTweetId != null) {
-            if (category.ids == null) category.ids = new ArrayList<>();
-            category.ids.add(mTweetId);
-            category.save();
+        if (mTweetId == null) return false;
+        if (category.ids == null) category.ids = new ArrayList<>();
+        category.ids.add(mTweetId);
+        category.save();
 
-            FavoriteService favoriteService = twitterApiClient.getFavoriteService();
-            favoriteService.create(mTweetId, false, new Callback<Tweet>() {
-                @Override
-                public void success(Result<Tweet> result) {
-                    Toast.makeText(getActivity(), result.data.user.screenName + "さんの投稿をお気に入りに登録しました", Toast.LENGTH_SHORT).show();
-                }
+        FavoriteService favoriteService = twitterApiClient.getFavoriteService();
+        favoriteService.create(mTweetId, false, new Callback<Tweet>() {
+            @Override
+            public void success(Result<Tweet> result) {
+                Toast.makeText(getActivity(), result.data.user.screenName + "さんの投稿をお気に入りに登録しました", Toast.LENGTH_SHORT).show();
+            }
 
-                @Override
-                public void failure(TwitterException e) {
+            @Override
+            public void failure(TwitterException e) {
 
-                }
-            });
-
-            mTweetId = null;
-            Toast.makeText(getActivity(), category.name + "にツイートを追加しました！", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        return false;
+            }
+        });
+        Toast.makeText(getActivity(), category.name + "にツイートを追加しました！", Toast.LENGTH_SHORT).show();
+        return true;
     }
+
+    // ツイートを追加するときの押されたときの処理
+    private AdapterView.OnItemClickListener addTweetClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            Category category = mAdapter.getItem(position);
+            if (addTweet(category)) {
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
+            }
+        }
+    };
+
+    // お気に入りのツイート一覧を表示するときの処理
+    private AdapterView.OnItemClickListener intentFavListClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+            Intent intent = new Intent(getActivity(), FavTweetListActivity.class);
+            if (position == 0) {
+                intent.putExtra(FavTweetListActivity.CATEGORY_ID, -1);
+            } else {
+                Category category = mAdapter.getItem(position);
+                intent.putExtra(FavTweetListActivity.CATEGORY_ID, category.getId());
+            }
+            startActivity(intent);
+        }
+    };
 
 }

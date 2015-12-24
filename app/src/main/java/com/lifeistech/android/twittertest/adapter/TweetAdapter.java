@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.lifeistech.android.twittertest.AddFavActivity;
 import com.lifeistech.android.twittertest.BusHolder;
 import com.lifeistech.android.twittertest.R;
 import com.lifeistech.android.twittertest.event.AddCategoryEvent;
@@ -43,10 +44,8 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
         twitterApiClient = TwitterCore.getInstance().getApiClient();
     }
 
-
-
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder viewHolder;
         if (convertView == null) {
             convertView = View.inflate(getContext(), R.layout.item_tweet, null);
@@ -83,9 +82,7 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
                                 }
                             }
                     );*/
-
                     //リプライの処理
-
                 }
             });
 
@@ -108,11 +105,8 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
 
                         }
                     });
-
-
                 }
             });
-
             //お気に入りボタンを押した時
             viewHolder.favoriteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -136,21 +130,20 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
                     });
                 }
             });
-
             //リスト追加ボタンを押した時
             convertView.setTag(viewHolder);
             viewHolder.listBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    BusHolder.post(new AddCategoryEvent(getItem(position).id));
+                    Intent intent = AddFavActivity.createIntent(getContext(), getItem(viewHolder.itemPosition).id);
+                    getContext().startActivity(intent);
                 }
             });
-
-
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        viewHolder.itemPosition = position;
         Tweet item = getItem(position);
         viewHolder.nicknameText.setText(item.user.name);
         viewHolder.usernameText.setText("@" + item.user.screenName);
@@ -185,6 +178,7 @@ public class TweetAdapter extends ArrayAdapter<Tweet> {
     }
 
     public class ViewHolder {
+        int itemPosition;
         TextView nicknameText;
         ImageView icon;
         TextView usernameText;
