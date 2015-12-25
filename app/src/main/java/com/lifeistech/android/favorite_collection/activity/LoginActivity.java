@@ -5,10 +5,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Adapter;
 
 import com.lifeistech.android.favorite_collection.R;
+import com.lifeistech.android.favorite_collection.adapter.TutorialAdapter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -16,10 +21,11 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends AppCompatActivity {
 
-    private TwitterLoginButton loginButton;
+    private ViewPager viewPager;
     SharedPreferences sharedPreferences;
+    TutorialAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,23 +41,16 @@ public class LoginActivity extends Activity {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             // TopActivityにいく
+            return;
         }
 
-
-        loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
-        loginButton.setCallback(new Callback<TwitterSession>() {
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        adapter = new TutorialAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
-            public void success(Result<TwitterSession> result) {
-                // SharedPreferencesにログイン済みと記録する
-                sharedPreferences.edit().putBoolean("isLogin", true).commit();
-
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
-
-            @Override
-            public void failure(TwitterException exception) {
-                // Do something on failure
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
             }
         });
 
@@ -60,14 +59,17 @@ public class LoginActivity extends Activity {
         if (twitterSession == null) {
             twitterCore.getSessionManager();
         }
-
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        loginButton.onActivityResult(requestCode, resultCode, data);
+        if (viewPager.getCurrentItem() == adapter.getCount() - 1) {
+            Fragment fragment = adapter.getItem(viewPager.getCurrentItem());
+            if (fragment != null) {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
     }
 
     public void idou(View v) {
