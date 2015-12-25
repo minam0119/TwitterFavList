@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lifeistech.android.twittertest" >
+    package="com.lifeistech.android.favorite_collection">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".MainApplication"
+        android:name="com.lifeistech.android.favorite_collection.MainApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon_02"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login" >
+        android:theme="@style/AppTheme">
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/title_activity_main"></activity>
+        <activity
+            android:name=".activity.AddFavActivity"
+            android:label="@string/title_activity_add_fav"></activity>
         <activity
             android:name=".activity.FavTweetListActivity"
             android:label="@string/title_activity_tweet_list" />
@@ -38,15 +41,6 @@
         <meta-data
             android:name="AA_MODELS"
             android:value="com.lifeistech.android.twittertest.model.Category" />
-
-        <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/title_activity_main" >
-        </activity>
-        <activity
-            android:name=".AddFavActivity"
-            android:label="@string/title_activity_main2" >
-        </activity>
     </application>
 
 </manifest>

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.lifeistech.android.twittertest.activity.MainActivity">
+    tools:context="com.lifeistech.android.favorite_collection.activity.MainActivity">
 
 
     <android.support.v7.widget.Toolbar
